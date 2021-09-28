@@ -63,8 +63,8 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <showWeaveInfo>true</showWeaveInfo>
-<!--                    <forceAjcCompile>true</forceAjcCompile>-->
-<!--                    <sources/>-->
+                   <forceAjcCompile>true</forceAjcCompile>
+                   <sources/>
                     <weaveDirectories>
                         <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
                     </weaveDirectories>

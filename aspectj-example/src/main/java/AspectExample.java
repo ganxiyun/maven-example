@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Aspect;
 public class AspectExample {
 
     @Around("execution(* helloWorld(..))")
-    public Object aspectMethod(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object helloWorld(ProceedingJoinPoint joinPoint) throws Throwable {
         System.out.println("Method executing");
         return joinPoint.proceed();
     }
