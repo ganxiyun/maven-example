@@ -15,7 +15,7 @@
         <aspectj.version>1.9.7</aspectj.version>
         <aspectj-maven-plugin.version>1.14.0</aspectj-maven-plugin.version>
 
-        <!-- Following versions will result incorrect compile result.  -->
+        <!-- Following versions will result in a unexpected compile output.  -->
 
         <!-- <aspectj.version>1.8.9</aspectj.version>
         <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version> -->
@@ -38,6 +38,7 @@
                         <artifactId>aspectj-maven-plugin</artifactId>
                         <executions>
                             <execution>
+                                <id>aspectj-compile-in-default-profile</id>
                                 <phase>compile</phase>
                                 <goals>
                                     <goal>compile</goal>
@@ -79,6 +80,56 @@
             <build>
                 <plugins>
                     <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.0.2</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/unwoven-classes</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.outputDirectory}/</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>aspectj-maven-plugin</artifactId>
+                        <configuration>
+                            <weaveDirectories>
+                                <weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
+                            </weaveDirectories>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>weave-compiled-classes</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>weave-compiled-classes-if-lucky</id>
+            <properties>
+                <javac-compiler.phase>compile</javac-compiler.phase>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>aspectj-maven-plugin</artifactId>
                         <configuration>
@@ -108,8 +159,8 @@
                         <configuration>
                             <!--
                                 `forceAjcCompile` and `sources` MUST be added for aspectj-maven-plugin:1.10.
-                                If `sources` is not specified as empty, you will see incorrect woven result (`Duplicate field name` error).
-                                If `sources` is specified as tempty while `forceAjcCompile` is not enabled, AJC compile is ignored.                   
+                                If `sources` is not empty, you will see incorrect woven result (`Duplicate field name` error).
+                                If `sources` is empty while `forceAjcCompile` is not enabled, AJC compile is ignored.                   
                             -->
                             <forceAjcCompile>true</forceAjcCompile>
                             <sources />

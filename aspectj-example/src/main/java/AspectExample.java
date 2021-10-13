@@ -4,10 +4,9 @@ import org.aspectj.lang.annotation.Aspect;
 
 @Aspect
 public class AspectExample {
-
-    @Around("execution(* helloWorld(..))")
-    public Object helloWorld(ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("Method executing");
+    @Around("execution(public * helloWorld(..))")
+    public Object weaveExample(ProceedingJoinPoint joinPoint) throws Throwable {
+        System.out.println("AspectExample aspect is executing");
         return joinPoint.proceed();
     }
 }
